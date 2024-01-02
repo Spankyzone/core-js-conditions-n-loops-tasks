@@ -69,8 +69,13 @@ function getMaxNumber(a, b, c) {
  * {x: 1, y: 1}, {x: 2, y: 8} => false
  * {x: 1, y: 1}, {x: 2, y: 8} => false
  */
-function canQueenCaptureKing(/* queen, king */) {
-  throw new Error('Not implemented');
+function canQueenCaptureKing(queen, king) {
+  if (queen.x === king.x || queen.y === king.y) {
+    return true;
+  }
+  const xDiff = Math.abs(queen.x - king.x);
+  const yDiff = Math.abs(queen.y - king.y);
+  return xDiff === yDiff;
 }
 
 /**
@@ -230,8 +235,19 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  let totalSum = 0;
+  for (let i = 0; i < arr.length; i += 1) {
+    totalSum += arr[i];
+  }
+  let leftSum = 0;
+  for (let i = 0; i < arr.length; i += 1) {
+    if (leftSum === totalSum - leftSum - arr[i]) {
+      return i;
+    }
+    leftSum += arr[i];
+  }
+  return -1;
 }
 
 /**
@@ -255,8 +271,48 @@ function getBalanceIndex(/* arr */) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  const matrix = [];
+  for (let i = 0; i < size; i += 1) {
+    matrix[i] = [];
+    for (let j = 0; j < size; j += 1) {
+      matrix[i][j] = 0;
+    }
+  }
+
+  let num = 1;
+  let top = 0;
+  let bottom = size - 1;
+  let left = 0;
+  let right = size - 1;
+
+  while (num <= size * size) {
+    for (let i = left; i <= right; i += 1) {
+      matrix[top][i] = num;
+      num += 1;
+    }
+    top += 1;
+
+    for (let i = top; i <= bottom; i += 1) {
+      matrix[i][right] = num;
+      num += 1;
+    }
+    right -= 1;
+
+    for (let i = right; i >= left; i -= 1) {
+      matrix[bottom][i] = num;
+      num += 1;
+    }
+    bottom -= 1;
+
+    for (let i = bottom; i >= top; i -= 1) {
+      matrix[i][left] = num;
+      num += 1;
+    }
+    left += 1;
+  }
+
+  return matrix;
 }
 
 /**
@@ -292,8 +348,22 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  if (arr.length < 2) {
+    return arr;
+  }
+
+  const pivot = arr[0];
+  const left = [];
+  const right = [];
+  for (let i = 1; i < arr.length; i += 1) {
+    if (pivot > arr[i]) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
+    }
+  }
+  return sortByAsc(left).concat(pivot, sortByAsc(right));
 }
 
 /**
@@ -315,6 +385,20 @@ function sortByAsc(/* arr */) {
  */
 function shuffleChar(/* str, iterations */) {
   throw new Error('Not implemented');
+  // let shuffledStr = str;
+  // for (let i = 0; i < iterations; i += 1) {
+  //   let evenChars = '';
+  //   let oddChars = '';
+  //   for (let j = 0; j < shuffledStr.length; j += 1) {
+  //     if (j % 2 === 0) {
+  //       evenChars += shuffledStr[j];
+  //     } else {
+  //       oddChars += shuffledStr[j];
+  //     }
+  //   }
+  //   shuffledStr = evenChars + oddChars;
+  // }
+  // return shuffledStr;
 }
 
 /**
@@ -334,8 +418,34 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const digits = [];
+  let temp = number;
+  while (temp > 0) {
+    digits.unshift(temp % 10);
+    temp = Math.floor(temp / 10);
+  }
+  let i = digits.length - 2;
+  while (i >= 0 && digits[i] >= digits[i + 1]) {
+    i -= 1;
+  }
+  if (i < 0) {
+    return number;
+  }
+  let j = digits.length - 1;
+  while (j > i && digits[j] <= digits[i]) {
+    j -= 1;
+  }
+  [digits[i], digits[j]] = [digits[j], digits[i]];
+  const sortedTail = digits.slice(i + 1).sort((a, b) => a - b);
+  let result = 0;
+  for (let k = 0; k < i + 1; k += 1) {
+    result = result * 10 + digits[k];
+  }
+  for (let k = 0; k < sortedTail.length; k += 1) {
+    result = result * 10 + sortedTail[k];
+  }
+  return result;
 }
 
 module.exports = {
