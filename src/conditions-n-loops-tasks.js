@@ -125,8 +125,29 @@ function isIsoscelesTriangle(a, b, c) {
  *  10  => X
  *  26  => XXVI
  */
-function convertToRomanNumerals(/* num */) {
-  throw new Error('Not implemented');
+function convertToRomanNumerals(num) {
+  if (num < 1 || num > 39) {
+    return 'Number out of range';
+  }
+
+  const romanNumerals = [
+    { value: 10, numeral: 'X' },
+    { value: 9, numeral: 'IX' },
+    { value: 5, numeral: 'V' },
+    { value: 4, numeral: 'IV' },
+    { value: 1, numeral: 'I' },
+  ];
+
+  let result = '';
+  let remainingNum = num;
+  for (let i = 0; i < romanNumerals.length; i += 1) {
+    while (remainingNum >= romanNumerals[i].value) {
+      result += romanNumerals[i].numeral;
+      remainingNum -= romanNumerals[i].value;
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -144,8 +165,60 @@ function convertToRomanNumerals(/* num */) {
  *  '10,5'    => 'one zero point five'
  *  '1950.2'  => 'one nine five zero point two'
  */
-function convertNumberToString(/* numberStr */) {
-  throw new Error('Not implemented');
+function convertNumberToString(numberStr) {
+  let result = '';
+
+  for (let i = 0; i < numberStr.length; i += 1) {
+    const digit = numberStr[i];
+    let word = '';
+
+    switch (digit) {
+      case '0':
+        word = 'zero';
+        break;
+      case '1':
+        word = 'one';
+        break;
+      case '2':
+        word = 'two';
+        break;
+      case '3':
+        word = 'three';
+        break;
+      case '4':
+        word = 'four';
+        break;
+      case '5':
+        word = 'five';
+        break;
+      case '6':
+        word = 'six';
+        break;
+      case '7':
+        word = 'seven';
+        break;
+      case '8':
+        word = 'eight';
+        break;
+      case '9':
+        word = 'nine';
+        break;
+      case '.':
+        word = 'point';
+        break;
+      case ',':
+        word = 'point';
+        break;
+      case '-':
+        word = 'minus';
+        break;
+      default:
+        word = '';
+    }
+    result += i === 0 ? word : ` ${word}`;
+  }
+
+  return result;
 }
 
 /**
@@ -330,8 +403,24 @@ function getSpiralMatrix(size) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const n = matrix.length;
+  const nMatrix = matrix;
+  for (let j = 0; j < Math.floor(n / 2); j += 1) {
+    const first = j;
+    const last = n - 1 - j;
+    for (let i = first; i < last; i += 1) {
+      const offset = i - first;
+      const top = matrix[first][i];
+
+      nMatrix[first][i] = matrix[last - offset][first];
+      nMatrix[last - offset][first] = matrix[last][last - offset];
+      nMatrix[last][last - offset] = matrix[i][last];
+      nMatrix[i][last] = top;
+    }
+  }
+
+  return matrix;
 }
 
 /**
@@ -349,21 +438,15 @@ function rotateMatrix(/* matrix */) {
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
 function sortByAsc(arr) {
-  if (arr.length < 2) {
-    return arr;
-  }
-
-  const pivot = arr[0];
-  const left = [];
-  const right = [];
-  for (let i = 1; i < arr.length; i += 1) {
-    if (pivot > arr[i]) {
-      left.push(arr[i]);
-    } else {
-      right.push(arr[i]);
+  const mass = arr;
+  for (let i = 1; i < mass.length; i += 1) {
+    let j = i;
+    while (j > 0 && mass[j - 1] > mass[i]) {
+      mass[j] = mass[j - 1];
+      j -= 1;
     }
+    mass[j] = mass[i];
   }
-  return sortByAsc(left).concat(pivot, sortByAsc(right));
 }
 
 /**
@@ -383,22 +466,22 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
-  // let shuffledStr = str;
-  // for (let i = 0; i < iterations; i += 1) {
-  //   let evenChars = '';
-  //   let oddChars = '';
-  //   for (let j = 0; j < shuffledStr.length; j += 1) {
-  //     if (j % 2 === 0) {
-  //       evenChars += shuffledStr[j];
-  //     } else {
-  //       oddChars += shuffledStr[j];
-  //     }
-  //   }
-  //   shuffledStr = evenChars + oddChars;
-  // }
-  // return shuffledStr;
+function shuffleChar(str, iterations) {
+  let newStr = str;
+  let oddStr = '';
+  let evenStr = '';
+  let n = 0;
+  while (n < iterations) {
+    for (let i = 1, j = 0; i && j < str.length; i += 2, j += 2) {
+      oddStr += newStr.slice(i, i + 1);
+      evenStr += newStr.slice(j, j + 1);
+    }
+    n += 1;
+    newStr = evenStr.concat(oddStr);
+    oddStr = '';
+    evenStr = '';
+  }
+  return newStr;
 }
 
 /**
@@ -418,34 +501,43 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(number) {
-  const digits = [];
-  let temp = number;
-  while (temp > 0) {
-    digits.unshift(temp % 10);
-    temp = Math.floor(temp / 10);
-  }
-  let i = digits.length - 2;
-  while (i >= 0 && digits[i] >= digits[i + 1]) {
-    i -= 1;
-  }
-  if (i < 0) {
-    return number;
-  }
-  let j = digits.length - 1;
-  while (j > i && digits[j] <= digits[i]) {
-    j -= 1;
-  }
-  [digits[i], digits[j]] = [digits[j], digits[i]];
-  const sortedTail = digits.slice(i + 1).sort((a, b) => a - b);
-  let result = 0;
-  for (let k = 0; k < i + 1; k += 1) {
-    result = result * 10 + digits[k];
-  }
-  for (let k = 0; k < sortedTail.length; k += 1) {
-    result = result * 10 + sortedTail[k];
-  }
-  return result;
+function getNearestBigger(/* number */) {
+  throw new Error('Not implemented');
+  // const digits = [];
+  // let temp = number;
+
+  // while (temp > 0) {
+  //   digits.unshift(temp % 10);
+  //   temp = Math.floor(temp / 10);
+  // }
+
+  // let i = digits.length - 2;
+  // while (i >= 0 && digits[i] >= digits[i + 1]) {
+  //   i -= 1;
+  // }
+
+  // if (i < 0) {
+  //   return number;
+  // }
+
+  // let j = digits.length - 1;
+  // while (digits[j] <= digits[i]) {
+  //   j -= 1;
+  // }
+
+  // [digits[i], digits[j]] = [digits[j], digits[i]];
+
+  // const left = digits.slice(0, i + 1);
+  // const right = digits.slice(i + 1).reverse();
+
+  // const result = [...left, ...right];
+
+  // let res = 0;
+  // for (let k = 0; k < result.length; k += 1) {
+  //   res = res * 10 + result[k];
+  // }
+
+  // return res;
 }
 
 module.exports = {

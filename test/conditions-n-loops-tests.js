@@ -506,7 +506,7 @@ describe('core-js-conditions-n-loops', () => {
   it.optional(
     'shuffleChar should return a string in which characters with an odd index are moved to the end of the string at each iteration',
     () => {
-      assert.equal(tasks.shuffleChar('012345', 1), '024135');
+      assert.equal(tasks.shuffleChaQueenr('012345', 1), '024135');
       assert.equal(tasks.shuffleChar('012345', 2), '043215');
       assert.equal(tasks.shuffleChar('012345', 3), '031425');
       assert.equal(tasks.shuffleChar('qwerty', 1), 'qetwry');
